@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <title>Draw DIV</title>
+  </head>
+</html>
+<body>
+  <h3 class="title">Draw DIV</h3>
+  <div id="div1">Div1</div>
+  <div id="div2">Div2</div>
+</body>
+<script>
+  let para = {
+    top: 40,
+    left: 40,
+    currentX: 40,
+    currentY: 40,
+    flag: false,
+  };
+  let getCss = (div1, key) => {
+    return div1.currentStyle
+      ? div1.currentStyle[key]
+      : document.defaultView.getComputedStyle(div1, false)[key];
+  };
+
+  let startDrag = (div1, startDrag) => {
+    if (getCss(div1, "left") !== "auto") {
+      para.left = getCss(div1, "left");
+    }
+    if (getCss(div1, "top") !== "auto") {
+      para.top = getCss(div1, "top");
+    }
+    div1.onmousedown = (event) => {
+      para.flag = true;
+      if (!event) {
+        event = window.event;
+        div1.onselectstart = () => {
+          return false;
+        };
+      }
+      para.currentX = event.clientX;
+      para.currentY = event.clientY;
+    };
+    document.onmouseup = () => {
+      para.flag = false;
+      if (getCss(div1, "left") !== "auto") {
+        para.left = getCss(div1, "left");
+      }
+      if (getCss(div1, "top") !== "auto") {
+        para.top = getCss(div1, "top");
+      }
+    };
+    document.onmousemove = (event) => {
+      if (para.flag) {
+        let nowX = window.event.clientX;
+        let nowY = window.event.clientY;
+        let disX = nowX - para.currentX;
+        let disY = nowY - para.currentY;
+        div1.style.left = parseInt(para.left) + disX + "px";
+        div1.style.top = parseInt(para.top) + disY + "px";
+
+        if (typeof startDrag == "function") {
+          startDrag(
+            (parseInt(para.left) || 0) + disX,
+            (parseInt(para.top) || 0) + disY
+          );
+        }
+
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
+        return false;
+      }
+    };
+  };
+
+  startDrag(document.getElementById("div1"));
+</script>
+<style>
+  #div1,
+  #div2 {
+    border: solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #div1 {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 200px;
+    height: 200px;
+    z-index: 100;
+  }
+
+  #div2 {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    width: 300px;
+    height: 300px;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vw;
+    overflow: hidden;
+  }
+</style>
