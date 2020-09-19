@@ -4,16 +4,34 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./iconfinder_pen_stroke_sketch_doodle_lineart_138_451444.png"
+    />
     <title>Light Box</title>
   </head>
 </html>
 <body>
   <div>
-    <h3 class="title">lightBox</h3>
+    <h3 class="title">
+      <span onclick="clickPage('LightBox')">LightBox</span> |
+      <span onclick="clickPage('DragDIV')"> DragDIV</span>
+    </h3>
     <div class="lightBox">
-      <div class="closeBtn" onclick="closeMask()">X</div>
+      <div class="closeBtn" onclick="closeMask()">
+        <i class="fas fa-times"></i>
+      </div>
       <div class="mask" onclick="closeMask()"></div>
-      <img class="demoPic" src="./123.png" alt="" />
+      <img
+        class="demoPic"
+        src="./pexels-matthias-groeneveld-4200741.jpg"
+        alt=""
+      />
       <div class="demoContainer" onclick="lightBox()">
         <p class="demoText">DEMO</p>
       </div>
@@ -26,6 +44,7 @@
     document.getElementsByClassName("mask")[0].classList.add("show");
     document.getElementsByClassName("closeBtn")[0].classList.add("show");
     document.getElementsByClassName("demoText")[0].classList.add("notShow");
+    document.getElementsByClassName("title")[0].style.color = "#fff";
   };
 
   let closeMask = () => {
@@ -33,6 +52,12 @@
     document.getElementsByClassName("mask")[0].classList.remove("show");
     document.getElementsByClassName("closeBtn")[0].classList.remove("show");
     document.getElementsByClassName("demoText")[0].classList.remove("notShow");
+    document.getElementsByClassName("title")[0].style.color = "#000";
+  };
+
+  let clickPage = (para) => {
+    if (location.href.indexOf(para) == -1)
+      location.href = `https://second9040.github.io/test0917/${para}.html`;
   };
 </script>
 <style>
@@ -64,6 +89,7 @@
     top: 0;
     left: 0;
     z-index: 1;
+    transition: all 0.2s;
   }
 
   .closeBtn {
@@ -72,9 +98,15 @@
     right: 20px;
     top: 20px;
     display: none;
-    padding: 15px;
+    padding: 10px;
     background: #fff;
-    border-radius: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .closeBtn:hover {
+    background: #e1b5b5;
+    color: #bd2b2b;
   }
 
   .show {
@@ -83,5 +115,39 @@
 
   .notShow {
     display: none;
+  }
+
+  .title {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+  }
+
+  .title span {
+    padding: 10px;
+    transition: all 0.2s;
+  }
+
+  .title span::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    width: 80px;
+    transform: scaleX(0);
+    height: 2px;
+    background: #d30062;
+    transition: all 0.4s;
+    transform-origin: 0 100%;
+  }
+
+  .title span:hover {
+    cursor: pointer;
+    color: #d30062;
+    font-weight: bold;
+  }
+
+  .title span:hover::before {
+    transform: scaleX(1);
   }
 </style>
