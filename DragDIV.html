@@ -4,20 +4,43 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./iconfinder_pen_stroke_sketch_doodle_lineart_138_451444.png"
+    />
     <title>Draw DIV</title>
   </head>
 </html>
 <body>
-  <h3 class="title">Draw DIV</h3>
-  <div id="div1">Div1</div>
+  <h3 class="title">
+    <span onclick="clickPage('LightBox')">LightBox</span> |
+    <span onclick="clickPage('DragDIV')"> DragDIV</span>
+  </h3>
+  <div id="div1">Div1。<br />可隨意拖曳，靠近DIV2會被吸進去。</div>
   <div id="div2">Div2</div>
+  <div id="refresh" onclick="refresh()"><i class="fas fa-redo-alt"></i></div>
 </body>
 <script>
+  let div1RightBottomPos = {
+    top: 380,
+    left: 320,
+  };
+
+  let div2LeftTopPos = {
+    top: window.innerHeight - 350,
+    left: window.innerWidth - 350,
+  };
+
   let para = {
-    top: 40,
-    left: 40,
-    currentX: 40,
-    currentY: 40,
+    top: 80,
+    left: 20,
+    currentX: 20,
+    currentY: 80,
     flag: false,
   };
   let getCss = (div1, key) => {
@@ -59,14 +82,23 @@
         let nowY = window.event.clientY;
         let disX = nowX - para.currentX;
         let disY = nowY - para.currentY;
-        div1.style.left = parseInt(para.left) + disX + "px";
-        div1.style.top = parseInt(para.top) + disY + "px";
+        div1.style.left = calcPos(parseInt(para.left), disX) + "px";
+        div1.style.top = calcPos(parseInt(para.top), disY) + "px";
+        div1RightBottomPos.left =
+          calcPos(parseInt(para.left), disX) + 200 + 100;
+        div1RightBottomPos.top = calcPos(parseInt(para.top), disY) + 200 + 100;
 
         if (typeof startDrag == "function") {
           startDrag(
             (parseInt(para.left) || 0) + disX,
             (parseInt(para.top) || 0) + disY
           );
+        }
+        if (
+          div1RightBottomPos.left > div2LeftTopPos.left &&
+          div1RightBottomPos.top > div2LeftTopPos.top
+        ) {
+          div1.style.display = "none";
         }
 
         if (event.preventDefault) {
@@ -78,20 +110,76 @@
   };
 
   startDrag(document.getElementById("div1"));
+
+  let refresh = () => {
+    document.getElementById("div1").style.left = 20;
+    document.getElementById("div1").style.top = 80;
+    document.getElementById("div1").style.display = "flex";
+    div1RightBottomPos = { top: 80, left: 20 };
+    para = {
+      top: 80,
+      left: 20,
+      currentX: 20,
+      currentY: 80,
+      flag: false,
+    };
+  };
+  let calcPos = (paraPos, disPos) => {
+    return paraPos + disPos;
+  };
+
+  let clickPage = (para) => {
+    if (location.href.indexOf(para) == -1)
+      location.href = location.href = `https://second9040.github.io/test0917/${para}.html`;
+  };
 </script>
 <style>
+  .title {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  .title span {
+    padding: 10px;
+    transition: all 0.2s;
+  }
+
+  .title span::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    width: 80px;
+    transform: scaleX(0);
+    height: 2px;
+    background: #d30062;
+    transition: all 0.4s;
+    transform-origin: 0 100%;
+  }
+
+  .title span:hover {
+    cursor: pointer;
+    color: #d30062;
+    font-weight: bold;
+  }
+
+  .title span:hover::before {
+    transform: scaleX(1);
+  }
+
   #div1,
   #div2 {
     border: solid;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
   }
 
   #div1 {
     position: absolute;
-    top: 40px;
-    left: 40px;
+    top: 80px;
+    left: 20px;
     width: 200px;
     height: 200px;
     z-index: 100;
@@ -105,9 +193,26 @@
     height: 300px;
   }
 
+  #refresh {
+    position: absolute;
+    right: 50px;
+    top: 40px;
+    z-index: 200;
+    background: #9999ff;
+    padding: 15px;
+    color: #fff;
+    border-radius: 50px;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  #refresh:hover {
+    background: #fff;
+    color: #9999ff;
+    border: solid 1px #9999ff;
+  }
+
   body {
-    width: 100vw;
-    height: 100vw;
     overflow: hidden;
   }
 </style>
